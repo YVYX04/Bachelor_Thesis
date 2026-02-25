@@ -12,4 +12,6 @@ It will also enable the people interested in my thesis to navigate my research p
 
 ## Contents
 
-+ If an article is highly relevant to my thesis, I will realize a brief summary of it. All of these summaries can be found in my [notes](/references/notes/).
+### A. Personal Notes
+
+If an article is highly relevant to my thesis, I will realize a brief summary of it. All of these summaries can be found in my [notes](/references/notes/).
