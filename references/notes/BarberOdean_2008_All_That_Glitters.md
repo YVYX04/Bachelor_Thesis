@@ -1,4 +1,7 @@
----
+<details>
+<summary>Metadata</summary>
+
+```yaml
 title: "All That Glitters: The Effect of Attention and News on the Buying Behavior of Individual and Institutional Investors"
 authors: ["Barber, Brad M.", "Odean, Terrance"]
 year: 2008
@@ -8,7 +11,8 @@ my_relevance: "High"
 status: "read"
 doi_or_url: "https://doi.org/10.1093/rfs/hhm079"
 citation_key: "BarberOdean2008"
----
+```
+</details>
 
 # All That Glitters: The Effect of Attention and News on the Buying Behavior of Individual and Institutional Investors
 
