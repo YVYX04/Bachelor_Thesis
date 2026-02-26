@@ -15,3 +15,7 @@ It will also enable the people interested in my thesis to navigate my research p
 ### A. Personal Notes
 
 If an article is highly relevant to my thesis, I will realize a brief summary of it. All of these summaries can be found in my [notes](/references/notes/).
+
+### B. Bachelor Thesis Log
+
+For anyone interested in tracking my past and current progress, you can use the [bachelor thesis log](/progress_tracking/Thesis_Progress_Log.md).
