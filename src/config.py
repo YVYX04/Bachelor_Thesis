@@ -31,3 +31,23 @@ CRSP_COLUMNS_001 = {
     "SHRCD": "shrcd"
 }
 
+
+# Fama-French 5-factor data
+############################
+
+# Fama-French 5-factor data paths
+FF_5F_DATA_RAW_PATH = "../data/raw/5_factors_raw.csv"
+FF_5F_DATA_INTERIM_PATH = "../data/interim/"
+FF_5F_DATA_PROCESSED_PATH = "../data/processed/"
+
+# Fama-French 5-factor column names
+FF_5F_COLUMNS = {
+    "date": "date",
+    "Mkt-RF": "mkt_rf",
+    "SMB": "smb",
+    "HML": "hml",
+    "RMW": "rmw",
+    "CMA": "cma",
+    "RF": "rf"
+}
+
