@@ -11,7 +11,7 @@ This file contains the paths to the data and the output directories.
 #######
 
 # CRSP data paths
-CRSP_DATA_RAW_PATH = "../data/raw/CRSP_2012_2019.csv"
+CRSP_DATA_RAW_PATH = "../data/raw/CRSP_18_20.csv"
 CRSP_DATA_INTERIM_PATH = "../data/interim/"
 CRSP_DATA_PROCESSED_PATH = "../data/processed/"
 
@@ -23,7 +23,6 @@ CRSP_COLUMNS_001 = {
     "PRC": "prc",
     "VOL": "vol",
     "SHROUT": "shrout",
-    "RET": "ret",
     "DLRET": "dlret",
     "DLSTCD": "dlstcd",
     "EXCHCD": "exchcd",
@@ -50,4 +49,12 @@ FF_5F_COLUMNS = {
     "CMA": "cma",
     "RF": "rf"
 }
+
+# Robintrack Data
+##################
+
+# Robintrack data paths
+ROBINTRACK_DATA_RAW_PATH = "../data/raw/tmp/popularity_export/"
+ROBINTRACK_DATA_INTERIM_PATH = "../data/interim/robintrack/"
+ROBINTRACK_DATA_PROCESSED_PATH = "../data/processed/robintrack/"
 
