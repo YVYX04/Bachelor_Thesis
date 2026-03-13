@@ -42,7 +42,7 @@ def merge_crsp_rh():
     rh_df = pd.read_csv(os.path.join(ROBINTRACK_DATA_PROCESSED_PATH, "robintrack_merged.csv"))
 
     # 2) Merge the two data frames on the date and ticker columns, keeping only the rows that have a match in the CRSP data frame
-    merged_df = pd.merge(crsp_df, rh_df, on=["date", "ticker"], how="inner")
+    merged_df = pd.merge(rh_df, crsp_df, on=["date", "ticker"], how="right")
 
     # 3) Save the merged data frame to the processed directory
     merged_df.to_csv(os.path.join(CRSP_DATA_PROCESSED_PATH, "CRSP_RH_merged.csv"), index=False)

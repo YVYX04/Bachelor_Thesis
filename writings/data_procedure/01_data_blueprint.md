@@ -31,7 +31,7 @@ elements outline in their study.
 
 At this point, I already have enough information to construct the primary variables of
 my theis (regarding the Robinhood app). I have to establish a daily granularity of $users\_close$ for all the tickers present in the Robinhood data set. Then, I will be able
-to verify the summary statistis of my data set against the one of Barber et al. (2022).
+to verify the summary statistics of my data set against the one of Barber et al. (2022).
 Once this is done, I proceed with building the herding events.
 
 

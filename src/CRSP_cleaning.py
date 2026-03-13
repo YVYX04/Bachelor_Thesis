@@ -39,10 +39,12 @@ def clean_crsp_data():
     crsp_data['date'] = pd.to_datetime(crsp_data['date'], format='%Y-%m-%d')
 
     # select only common stocks (shrcd = 10 or 11)
-    crsp_data = crsp_data[crsp_data['shrcd'].isin([10, 11])]
+    # Barber et al. (2022) do not apply this filter! (I imitate their design)
+   # crsp_data = crsp_data[crsp_data['shrcd'].isin([10, 11])]
 
     # select only stocks listed on NYSE, AMEX, NASDAQ (exchcd = 1, 2, 3)
-    crsp_data = crsp_data[crsp_data['exchcd'].isin([1, 2, 3])]
+    # Barber et al. (2022) do not apply this filter! (I imitate their design)
+    # crsp_data = crsp_data[crsp_data['exchcd'].isin([1, 2, 3])]
 
     # clean the returns (ret) and adjust for delisting returns (dlret, dlstcd)
     # step 1: if dlstcd is not NA, then ret is set to -1 by default
@@ -87,7 +89,7 @@ def clean_crsp_data():
             category=UserWarning,
         )
 
-    # Optional: volume missing usually means no reported trading volume; set to 0 rather than dropping observations.
+    # volume missing usually means no reported trading volume; set to 0 rather than dropping observations.
     if missing_vol > 0:
         crsp_data['vol'] = crsp_data['vol'].fillna(0)
     
