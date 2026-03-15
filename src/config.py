@@ -58,3 +58,12 @@ ROBINTRACK_DATA_RAW_PATH = "../data/raw/tmp/popularity_export/"
 ROBINTRACK_DATA_INTERIM_PATH = "../data/interim/robintrack/"
 ROBINTRACK_DATA_PROCESSED_PATH = "../data/processed/robintrack/"
 
+
+# Google Trends Data
+#######################
+
+# data paths for merged RH and CRSP data
+CRSP_RH_MERGED_DATA_PATH = "data/processed/CRSP_RH_merged.csv"
+GT_INTERIM_PATH = "data/interim/google_trends/"
+GT_PROCESSED_PATH = "data/processed/google_trends/"
+
