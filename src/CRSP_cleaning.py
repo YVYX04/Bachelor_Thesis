@@ -14,13 +14,16 @@ import os
 import warnings
 
 # Importing configuration
-from config import CRSP_DATA_RAW_PATH, CRSP_DATA_INTERIM_PATH, CRSP_DATA_PROCESSED_PATH, CRSP_COLUMNS_001
+from src.config import CRSP_DATA_RAW_PATH, CRSP_DATA_INTERIM_PATH, CRSP_DATA_PROCESSED_PATH, CRSP_COLUMNS_001
 
-def clean_crsp_data():
+def clean_crsp_data(output_name: str):
     """
     Function to clean the CRSP data.
     This function reads the raw CRSP data, performs cleaning and preprocessing steps,
     and saves the cleaned data to the interim directory.
+
+    Args:
+        output_name (str): Name of the output CSV file without extension.
     """
     # Read the raw CRSP data
     # Use low_memory=False to avoid chunk-wise dtype inference warnings on large files
@@ -47,27 +50,44 @@ def clean_crsp_data():
     # crsp_data = crsp_data[crsp_data['exchcd'].isin([1, 2, 3])]
 
     # clean the returns (ret) and adjust for delisting returns (dlret, dlstcd)
-    # step 1: if dlstcd is not NA, then ret is set to -1 by default
-    mask_1 = crsp_data['dlstcd'].notna()
-    crsp_data.loc[mask_1, 'ret'] = "-1"  # set to string first to avoid issues with mixed types; will convert to numeric later
+    crsp_data['ret'] = crsp_data['ret'].replace(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+                                                 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'], np.nan)
+    crsp_data['dlret'] = crsp_data['dlret'].replace(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+                                                     'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'], np.nan)
 
-    # step 2: if dlstcd is in the code list, then ret is set to -0.3 (Bali et al., 2016)
+    crsp_data['ret'] = pd.to_numeric(crsp_data['ret'], errors='coerce')
+    crsp_data['dlret'] = pd.to_numeric(crsp_data['dlret'], errors='coerce')
+
+    # Default imputation for delisting returns when dlret is missing
+    # If dlstcd is present, use -1 by default; for specific poor-performance delisting codes use -0.3.
+    default_dlret = pd.Series(np.nan, index=crsp_data.index, dtype='float64')
+
+    mask_1 = crsp_data['dlstcd'].notna()
+    default_dlret.loc[mask_1] = -1.0
+
     codes = [500, 520, 574, 580, 584] + list(range(551, 574))
     mask_2 = crsp_data['dlstcd'].isin(codes)
-    crsp_data.loc[mask_2, 'ret'] = "-0.3" # set to string first to avoid issues with mixed types; will convert to numeric later
+    default_dlret.loc[mask_2] = -0.3
 
-    # step 3: if a dlret is available, then ret is set to dlret
-    mask_3 = crsp_data['dlret'].notna()
-    crsp_data.loc[mask_3, 'ret'] = crsp_data.loc[mask_3, 'dlret']
+    # Fill missing dlret with the default imputation
+    crsp_data['dlret'] = crsp_data['dlret'].fillna(default_dlret)
 
-    # step 4: all the returns that are not classicaly available and encoded with letters are set to NA
-    cap_letters = list(chr(65 + i) for i in range(26))  # A-Z
-    mask_4 = crsp_data['ret'].isin(cap_letters)
-    crsp_data.loc[mask_4, 'ret'] = np.nan
+    # If both ret and dlret exist, combine them multiplicatively.
+    # If ret is missing but dlret exists, use dlret.
+    mask_both = crsp_data['ret'].notna() & crsp_data['dlret'].notna()
+    crsp_data.loc[mask_both, 'ret'] = (
+        (1 + crsp_data.loc[mask_both, 'ret']) * (1 + crsp_data.loc[mask_both, 'dlret']) - 1
+    )
 
-    # step 5: drop all the rows with NA returns and convert to numeric
+    mask_ret_missing = crsp_data['ret'].isna() & crsp_data['dlret'].notna()
+    crsp_data.loc[mask_ret_missing, 'ret'] = crsp_data.loc[mask_ret_missing, 'dlret']
+
+    # Drop observations with unavailable returns after cleaning
+    # Report number of observations dropped due to missing returns
+    missing_returns = crsp_data['ret'].isna().sum()
+    if missing_returns > 0:
+        warnings.warn(f"{missing_returns} observations with missing returns will be dropped.", category=UserWarning)
     crsp_data.dropna(subset=['ret'], inplace=True)
-    crsp_data['ret'] = pd.to_numeric(crsp_data['ret'])
 
     # step 6: sanity check: ensure that there are no returns less than -1
     negative_returns = crsp_data[crsp_data['ret'] < -1].shape[0]
@@ -101,9 +121,10 @@ def clean_crsp_data():
     print(crsp_data['ret'].describe())
 
     # save the cleaned data to the interim directory
+    crsp_data['ret'] = pd.to_numeric(crsp_data['ret'], errors='coerce')
     crsp_data.to_csv(os.path.join(CRSP_DATA_INTERIM_PATH, f"{output_name}.csv"), index=False)
 
 
 if __name__ == "__main__":
     output_name = input("Enter the name of the output file (without extension): ")
-    clean_crsp_data()
+    clean_crsp_data(output_name)

@@ -14,7 +14,7 @@ import os
 import warnings
 
 # Importing configuration
-from config import CRSP_DATA_INTERIM_PATH, CRSP_DATA_PROCESSED_PATH, ROBINTRACK_DATA_PROCESSED_PATH
+from src.config import CRSP_DATA_INTERIM_PATH, CRSP_DATA_PROCESSED_PATH, ROBINTRACK_DATA_PROCESSED_PATH
 
 def merge_crsp_rh():
     """

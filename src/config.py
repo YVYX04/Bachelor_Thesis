@@ -7,13 +7,18 @@ This file contains the paths to the data and the output directories.
 © 2026 Yvan Richard, University of St. Gallen
 """
 
+# General paths (from the root of the project)
+################
+# processed data paths
+PROCESSED_DATA_PATH = "data/processed/"
+
 # CRSP 
 #######
 
 # CRSP data paths
-CRSP_DATA_RAW_PATH = "../data/raw/CRSP_18_20.csv"
-CRSP_DATA_INTERIM_PATH = "../data/interim/"
-CRSP_DATA_PROCESSED_PATH = "../data/processed/"
+CRSP_DATA_RAW_PATH = "data/raw/CRSP_18_20_2.csv"
+CRSP_DATA_INTERIM_PATH = "data/interim/"
+CRSP_DATA_PROCESSED_PATH = "data/processed/"
 
 # CRSP column names (Selection 001)
 CRSP_COLUMNS_001 = {
@@ -35,9 +40,9 @@ CRSP_COLUMNS_001 = {
 ############################
 
 # Fama-French 5-factor data paths
-FF_5F_DATA_RAW_PATH = "../data/raw/5_factors_raw.csv"
-FF_5F_DATA_INTERIM_PATH = "../data/interim/"
-FF_5F_DATA_PROCESSED_PATH = "../data/processed/"
+FF_5F_DATA_RAW_PATH = "data/raw/5_factors_raw.csv"
+FF_5F_DATA_INTERIM_PATH = "data/interim/"
+FF_5F_DATA_PROCESSED_PATH = "data/processed/"
 
 # Fama-French 5-factor column names
 FF_5F_COLUMNS = {
@@ -54,9 +59,9 @@ FF_5F_COLUMNS = {
 ##################
 
 # Robintrack data paths
-ROBINTRACK_DATA_RAW_PATH = "../data/raw/tmp/popularity_export/"
-ROBINTRACK_DATA_INTERIM_PATH = "../data/interim/robintrack/"
-ROBINTRACK_DATA_PROCESSED_PATH = "../data/processed/robintrack/"
+ROBINTRACK_DATA_RAW_PATH = "data/raw/tmp/popularity_export/"
+ROBINTRACK_DATA_INTERIM_PATH = "data/interim/robintrack/"
+ROBINTRACK_DATA_PROCESSED_PATH = "data/processed/robintrack/"
 
 
 # Google Trends Data
@@ -67,3 +72,7 @@ CRSP_RH_MERGED_DATA_PATH = "data/processed/CRSP_RH_merged.csv"
 GT_INTERIM_PATH = "data/interim/google_trends/"
 GT_PROCESSED_PATH = "data/processed/google_trends/"
 
+# data paths for raw .dta files
+TSSVI_RAW_PATH = "data/google_svi/"
+TSSVI_INTERIM_PATH = "data/interim/google_trends/"
+TSSVI_PROCESSED_PATH = "data/processed/google_trends/"
