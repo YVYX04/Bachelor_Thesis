@@ -131,3 +131,25 @@ TAQ_COLUMNS = {
     "bs_ratio_Inst50k_vol": "bs_ratio_inst50k_vol", # absolute percent order imbalance based on institutional volume
     "bs_ratio_Inst50k_num": "bs_ratio_inst50k_num" # absolute percent order imbalance based on institutional number of trades
 }
+
+
+# RavenPack Data
+##################
+
+# column names for RavenPack data
+RP_COLUMNS = {
+    "rpa_date_utc": "date",
+    "rpa_time_utc": "timestamp",
+    "ticker": "ticker",
+    # "rp_identity_id": "identity_id",
+    "relevance": "relevance",
+    # "event_relevance": "event_relevance",
+    "rp_story_id": "story_id",
+    # "event_start_date_utc": "event_start_date",
+    # "event_end_date_utc": "event_end_date",
+    # "rp_story_event_count": "story_event_count",
+    # "rp_story_event_index": "story_event_index",
+    "event_sentiment_score": "ess",
+    "css": "css",
+    "anl_chg": "anl_chg"
+}
