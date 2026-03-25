@@ -28,7 +28,27 @@ def concat_raw():
     df1 = pd.read_stata(os.path.join(TSSVI_RAW_PATH, "TSSVI_RUSSEL3000_2018.dta"))
     df2 = pd.read_stata(os.path.join(TSSVI_RAW_PATH, "TSSVI_RUSSEL3000_2019.dta"))
     df3 = pd.read_stata(os.path.join(TSSVI_RAW_PATH, "TSSVI_RUSSEL3000_2020.dta"))
-    df_concat = pd.concat([df1, df2, df3], ignore_index=True)
+    df4 = pd.read_stata(os.path.join(TSSVI_RAW_PATH, "TSSVI_SP500_2010_2022.dta"))
+
+    # for each DataFrame, keep only the columns "date", "tic", and "TSSVI"
+    df1 = df1[["date", "tic", "TSSVI"]]
+    df2 = df2[["date", "tic", "TSSVI"]]
+    df3 = df3[["date", "tic", "TSSVI"]]
+    df4 = df4[["date", "tic", "TSSVI"]]
+
+    # parse the "date" column as datetime
+    df1["date"] = pd.to_datetime(df1["date"])
+    df2["date"] = pd.to_datetime(df2["date"])
+    df3["date"] = pd.to_datetime(df3["date"])
+    df4["date"] = pd.to_datetime(df4["date"])
+
+    # sort each DataFrame by date and ticker
+    df1 = df1.sort_values(["date", "tic"]).copy()
+    df2 = df2.sort_values(["date", "tic"]).copy()
+    df3 = df3.sort_values(["date", "tic"]).copy()
+    df4 = df4.sort_values(["date", "tic"]).copy()
+
+    df_concat = pd.concat([df1, df2, df3, df4], ignore_index=True)
 
     # 2) save the concatenated DataFrame to a .csv file in the interim directory
     os.makedirs(TSSVI_INTERIM_PATH, exist_ok=True)
