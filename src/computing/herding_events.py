@@ -32,7 +32,7 @@ from src.config import PROCESSED_DATA_PATH, RAW_DATA_PATH, INTERIM_DATA_PATH
 def identify_herding_events():
     # 1) read the merged CRSP, Robintrack, and TAQ data
     try:
-        merged_df = pd.read_csv(os.path.join(PROCESSED_DATA_PATH, "CRSP_RH_TAQ_merged.csv"))
+        merged_df = pd.read_csv(os.path.join(PROCESSED_DATA_PATH, "final_sample.csv"))
     except FileNotFoundError as e:
         print(f"Error: {e}")
         return
@@ -73,8 +73,8 @@ def identify_herding_events():
     print(f"Number of unique tickers involved: {num_unique_tickers}")
 
     # 6) Save two data frames to the processed directory: one with all stocks and a flag for herding events, and one with only the herding events
-    merged_df.to_csv(os.path.join(PROCESSED_DATA_PATH, "CRSP_RH_TAQ_herding_events.csv"), index=False)
-    merged_df[merged_df["rh_herd"]].to_csv(os.path.join(PROCESSED_DATA_PATH, "CRSP_RH_TAQ_herding_events_only.csv"), index=False)
+    merged_df.to_csv(os.path.join(PROCESSED_DATA_PATH, "herding_events_full.csv"), index=False)
+    merged_df[merged_df["rh_herd"]].to_csv(os.path.join(PROCESSED_DATA_PATH, "herding_events_only.csv"), index=False)
 
 if __name__ == "__main__":
     print("\nIdentifying herding events...\n")
