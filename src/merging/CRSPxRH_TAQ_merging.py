@@ -30,6 +30,10 @@ def merge_crsp_rh_taq():
     taq_df["date"] = pd.to_datetime(taq_df["date"]).dt.normalize()
     taq_df["ticker"] = taq_df["ticker"].astype(str).str.upper().str.strip()
 
+    # BEFORE MERGING, check for duplicates in the CRSP/RH data frame on (date, ticker) and report them
+    assert not crsp_rh_df.duplicated(subset=["date", "ticker"]).any()
+    assert not taq_df.duplicated(subset=["date", "ticker"]).any()
+
     # 3) Merge the two data frames on the date and ticker columns
     merged_df = pd.merge(crsp_rh_df, taq_df, on=["date", "ticker"], how="left")
 

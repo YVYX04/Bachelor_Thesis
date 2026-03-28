@@ -94,12 +94,13 @@ TAQ_COLUMNS = {
     "total_trade": "total_trade_LR",
     "BuyVol_LR": "buy_vol_LR",
     "SellVol_LR": "sell_vol_LR",
-    "total_vol": "total_vol_LR",
+    # "total_vol": "total_vol_LR",
     "CPrc": "close_price",
     "OPrc": "open_price",
     "CSize": "close_vol",
     "OSize": "open_vol",
     "total_vol_m": "total_vol_m", # total trade volume during market hours
+    "total_n_trades_m": "total_n_trades_m", # total number of trades during market hours
     "ret_mkt_m": "intra_ret",
     "BuyNumTrades_tick": "buy_num_trades_tick",
     "SellNumTrades_tick": "sell_num_trades_tick",

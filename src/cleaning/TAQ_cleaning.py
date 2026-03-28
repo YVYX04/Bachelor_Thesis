@@ -16,14 +16,10 @@ def clean_taq_data():
     """
     Function to clean the TAQ data for the bachelor thesis.
     This function reads the raw TAQ data, selects the relevant columns, renames them, and saves the cleaned data to a .csv file in the interim directory.
-
-    The format of the cleaned data frame will be as follows:
-    permno,date,time,price,volume,bid_price,ask_price
-    10026,2018-05-01,09:30:00,132.07001,1000,132.00,132.10
     """
 
     # 1) Read the raw TAQ data
-    taq_df = pd.read_csv(os.path.join(RAW_DATA_PATH, "taq_raw.csv"))
+    taq_df = pd.read_csv(os.path.join(RAW_DATA_PATH, "taq_raw_2.csv"))
 
     # 2) Select the relevant columns and rename them according to TAQ_COLUMNS
     taq_df = taq_df[list(TAQ_COLUMNS.keys())]

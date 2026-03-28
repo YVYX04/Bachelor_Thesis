@@ -26,7 +26,7 @@ def merge_crsp_rh():
 
     2) Robintrack
     --------------
-    date,users_close,users_last,ticker
+    date,users_close,users_last,ticker,intraday_userchg
     2018-06-01,70.0,70.0,RIV
 
     The goal is to merge the two data frames on the date and ticker columns,
@@ -34,15 +34,15 @@ def merge_crsp_rh():
     important because I only want tickers that are in the CRSP data frame.
 
     The format of the merged data frame will be as follows:
-    permno,date,ret,prc,vol,shrout,ticker,exchcd,users_close,users_last
+    permno,date,ret,prc,vol,shrout,ticker,exchcd,users_close,users_last,intraday_userchg
     """
 
     # 1) Read the cleaned CRSP data and the cleaned Robintrack data
-    crsp_df = pd.read_csv(os.path.join(CRSP_DATA_INTERIM_PATH, "CRSP_cleaned_a.csv"))
+    crsp_df = pd.read_csv(os.path.join(CRSP_DATA_INTERIM_PATH, "crsp_cleaned_dup.csv"))
     rh_df = pd.read_csv(os.path.join(ROBINTRACK_DATA_PROCESSED_PATH, "robintrack_merged.csv"))
 
-    # 2) Merge the two data frames on the date and ticker columns, keeping only the rows that have a match in the CRSP data frame
-    merged_df = pd.merge(rh_df, crsp_df, on=["date", "ticker"], how="right")
+    # 2) Merge the two data frames on the date and ticker columns
+    merged_df = pd.merge(rh_df, crsp_df, on=["date", "ticker"], how="outer")
 
     # 3) Save the merged data frame to the processed directory
     merged_df.to_csv(os.path.join(CRSP_DATA_PROCESSED_PATH, "CRSP_RH_merged.csv"), index=False)

@@ -8,6 +8,7 @@ This file contains the functions and procedures to clean and preprocess the CRSP
 """
 
 # Importing necessary libraries
+from pathlib import Path
 import pandas as pd
 import numpy as np
 import os
@@ -16,14 +17,20 @@ import warnings
 # Importing configuration
 from src.config import CRSP_DATA_RAW_PATH, CRSP_DATA_INTERIM_PATH, CRSP_DATA_PROCESSED_PATH, CRSP_COLUMNS_001
 
-def clean_crsp_data(output_name: str):
+def clean_crsp_data(output_name: str, deduplicate_ticker_date: bool = True):
     """
-    Function to clean the CRSP data.
-    This function reads the raw CRSP data, performs cleaning and preprocessing steps,
-    and saves the cleaned data to the interim directory.
+    Clean the CRSP data and optionally collapse duplicate ticker-date observations.
+
+    The duplicate collapse is intended for downstream merges performed on (ticker, date),
+    such as the Robintrack merge used in the thesis. When multiple CRSP securities share
+    the same ticker on the same date, the function keeps the observation with the largest
+    market capitalization proxy |prc| * shrout.
 
     Args:
         output_name (str): Name of the output CSV file without extension.
+        deduplicate_ticker_date (bool): If True, keep a single observation per (ticker, date)
+            using the largest market-cap proxy. The full cleaned file before this collapse is
+            also saved for audit purposes.
     """
     # Read the raw CRSP data
     # Use low_memory=False to avoid chunk-wise dtype inference warnings on large files
@@ -43,7 +50,7 @@ def clean_crsp_data(output_name: str):
 
     # select only common stocks (shrcd = 10 or 11)
     # Barber et al. (2022) do not apply this filter! (I imitate their design)
-   # crsp_data = crsp_data[crsp_data['shrcd'].isin([10, 11])]
+    crsp_data = crsp_data[crsp_data['shrcd'].isin([10, 11])]
 
     # select only stocks listed on NYSE, AMEX, NASDAQ (exchcd = 1, 2, 3)
     # Barber et al. (2022) do not apply this filter! (I imitate their design)
@@ -116,15 +123,73 @@ def clean_crsp_data(output_name: str):
     # columns to keep in the final dataset
     crsp_data = crsp_data[['permno', 'date', 'ret', 'prc', 'vol', 'shrout', 'ticker', 'exchcd']]
 
+    # Ensure numeric types needed for duplicate diagnostics and the market-cap proxy.
+    for col in ['prc', 'vol', 'shrout']:
+        crsp_data[col] = pd.to_numeric(crsp_data[col], errors='coerce')
+
+    # Keep an audit copy before collapsing duplicate (ticker, date) observations.
+    crsp_data_full = crsp_data.copy()
+
+    # Diagnose duplicate ticker-date observations.
+    ticker_date_counts = (
+        crsp_data.groupby(['date', 'ticker'])
+        .size()
+        .reset_index(name='n_rows')
+    )
+    duplicated_pairs = ticker_date_counts[ticker_date_counts['n_rows'] > 1].copy()
+
+    if not duplicated_pairs.empty:
+        warnings.warn(
+            f"Detected {len(duplicated_pairs)} duplicated (date, ticker) pairs in CRSP. "
+            "This usually reflects multiple permnos sharing the same ticker on a given date.",
+            category=UserWarning,
+        )
+
+    if deduplicate_ticker_date:
+        # When the downstream merge uses (ticker, date), retain a single CRSP row per pair.
+        # The economically dominant security is proxied by the largest absolute market cap.
+        crsp_data['mktcap_proxy'] = crsp_data['prc'].abs() * crsp_data['shrout']
+
+        dup_rows_before = crsp_data.duplicated(subset=['date', 'ticker'], keep=False).sum()
+        if dup_rows_before > 0:
+            crsp_data = (
+                crsp_data.sort_values(
+                    ['date', 'ticker', 'mktcap_proxy', 'permno'],
+                    ascending=[True, True, False, True]
+                )
+                .drop_duplicates(subset=['date', 'ticker'], keep='first')
+                .copy()
+            )
+
+            warnings.warn(
+                f"Collapsed {dup_rows_before} duplicated CRSP rows to a unique (date, ticker) sample "
+                "by keeping the row with the largest market-cap proxy.",
+                category=UserWarning,
+            )
+
+        if crsp_data.duplicated(subset=['date', 'ticker']).any():
+            raise ValueError("CRSP data are still not unique at the (date, ticker) level after deduplication.")
+
+        crsp_data.drop(columns=['mktcap_proxy'], inplace=True)
+
     # print summary statistics of the ret variable
     print("Summary statistics of the 'ret' variable:")
     print(crsp_data['ret'].describe())
 
     # save the cleaned data to the interim directory
     crsp_data['ret'] = pd.to_numeric(crsp_data['ret'], errors='coerce')
-    crsp_data.to_csv(os.path.join(CRSP_DATA_INTERIM_PATH, f"{output_name}.csv"), index=False)
+
+    output_path = Path(CRSP_DATA_INTERIM_PATH) / f"{output_name}.csv"
+    crsp_data.to_csv(output_path, index=False)
+
+    # Also save the full cleaned file before ticker-date deduplication for audit/debugging.
+    if deduplicate_ticker_date:
+        full_output_path = Path(CRSP_DATA_INTERIM_PATH) / f"{output_name}_full_before_ticker_date_dedup.csv"
+        crsp_data_full.to_csv(full_output_path, index=False)
+
+    print(f"Saved cleaned CRSP data to: {output_path}")
 
 
 if __name__ == "__main__":
     output_name = input("Enter the name of the output file (without extension): ")
-    clean_crsp_data(output_name)
+    clean_crsp_data(output_name, deduplicate_ticker_date=True)
