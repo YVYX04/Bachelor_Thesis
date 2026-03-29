@@ -42,7 +42,15 @@ def merge_crsp_rh():
     rh_df = pd.read_csv(os.path.join(ROBINTRACK_DATA_PROCESSED_PATH, "robintrack_merged.csv"))
 
     # 2) Merge the two data frames on the date and ticker columns
-    merged_df = pd.merge(rh_df, crsp_df, on=["date", "ticker"], how="outer")
+    merged_df = pd.merge(rh_df, crsp_df, on=["date", "ticker"], how="left")
+
+    # number of unique tickers in the merged data frame
+    unique_tickers = merged_df["ticker"].nunique()
+    print(f"Number of unique tickers in the merged data frame: {unique_tickers}")
+
+    # number of observations in the merged data frame
+    num_observations = merged_df.shape[0]
+    print(f"Number of observations in the merged data frame: {num_observations}")
 
     # 3) Save the merged data frame to the processed directory
     merged_df.to_csv(os.path.join(CRSP_DATA_PROCESSED_PATH, "CRSP_RH_merged.csv"), index=False)
