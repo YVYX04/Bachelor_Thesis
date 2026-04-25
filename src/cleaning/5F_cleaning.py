@@ -14,7 +14,7 @@ import os
 import warnings
 
 # import configuration
-from config import FF_5F_DATA_RAW_PATH, FF_5F_DATA_INTERIM_PATH, FF_5F_DATA_PROCESSED_PATH, FF_5F_COLUMNS
+from src.config import FF_5F_DATA_RAW_PATH, FF_5F_DATA_INTERIM_PATH, FF_5F_DATA_PROCESSED_PATH, FF_5F_COLUMNS
 
 
 def clean_fama_french_5f_data():
@@ -35,8 +35,8 @@ def clean_fama_french_5f_data():
     # parse date column to datetime
     data['date'] = pd.to_datetime(data['date'], format='%Y%m%d')
 
-    # only keep data from 2012 to 2019
-    data = data[(data['date'].dt.year >= 2012) & (data['date'].dt.year <= 2019)]
+    # only keep data from 2018 to 2020 (inclusive)
+    data = data[(data['date'].dt.year >= 2018) & (data['date'].dt.year <= 2020)]
 
     # rename columns according to config
     data.rename(columns=FF_5F_COLUMNS, inplace=True)
