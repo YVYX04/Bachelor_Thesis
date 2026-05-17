@@ -6,16 +6,30 @@ University of St. Gallen, Spring Term 2026
 
 ## Presentation
 
-This repository is an aggregate of the resources I will use and products I will create in the development and writing of my Bachelor Thesis at the University of St. Gallen. This Bachelor Thesis is wrote for the award of the Bachelor of Arts in Economics.
+This repository is an aggregate of the code and notebooks I used to produce the empirical findings presented in my bachelor thesis at the University of St. Gallen. The bachelor thesis was submitted on May 19, 2026.
 
-It will also enable the people interested in my thesis to navigate my research process.
+## Structure of the Repository
 
-## Contents
+The repository is organized as follows:
 
-### A. Personal Notes
+```txt
+.
+├── README.md              # Overview of the repository
+├── .gitignore             # Files and folders excluded from version control
+├── notebooks/             # Notebooks used to produce the empirical findings
+|   ├── CRSP/
+|   ├── CRSP_RH/
+|   ├── Fama_French/
+|   ├── RavenPack/
+|   ├── Robintrack/
+|   ├── TAQ/
+|   └── main/
+├── src/                   # Reusable Python source code
+|   ├── cleaning/
+|   ├── computing/
+|   ├── google_trends/
+|   └── merging/
+└── thesis/                # PDF of the final version
+```
 
-If an article is highly relevant to my thesis, I will realize a brief summary of it. All of these summaries can be found in my [notes](/references/notes/).
-
-### B. Bachelor Thesis Log
-
-For anyone interested in tracking my past and current progress, you can use the [bachelor thesis log](/progress_tracking/Thesis_Progress_Log.md).
+The `notebooks/` directory contains the main empirical workflows used for data cleaning, variable construction, estimation, and visualization. The `src/` directory contains reusable functions and scripts that support these workflows. Other directories are not directly relevant.
